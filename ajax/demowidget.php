@@ -20,14 +20,14 @@
 		/*
 		* RUN PAGE GRAPHS
 		*/
-	
+
 		// Load FLOAT dependencies (related to page)
 		loadScript("js/plugin/flot/jquery.flot.cust.min.js", loadFlotResize);
-	
+
 		function loadFlotResize() {
 			loadScript("js/plugin/flot/jquery.flot.resize.min.js", loadFlotToolTip);
 		}
-	
+
 		function loadFlotToolTip() {
 			loadScript("js/plugin/flot/jquery.flot.tooltip.min.js", generateRandomFlot);
 		}
@@ -38,20 +38,20 @@
 		        var data = [];
 		        var start = 100 + added;
 		        var end = 500 + added;
-		 
-		        for(i=1;i<=20;i++){        
-		            var d = Math.floor(Math.random() * (end - start + 1) + start);        
+
+		        for(i=1;i<=20;i++){
+		            var d = Math.floor(Math.random() * (end - start + 1) + start);
 		            data.push([i, d]);
 		            start++;
 		            end++;
 		        }
-		 
+
 		        return data;
 		    }
-		 
+
 		    var data1 = GenerateSeries(0);
-		    var data2 = GenerateSeries(10);    
-		 
+		    var data2 = GenerateSeries(10);
+
 		    var markings = [
 		        { xaxis: { from: 1, to: 2 }, color: "#E8E8E8" },
 		        { xaxis: { from: 4, to: 5 }, color: "#E8E8E8" },
@@ -60,10 +60,10 @@
 		        { xaxis: { from: 13, to: 14 }, color: "#E8E8E8" },
 		        { xaxis: { from: 16, to: 17 }, color: "#E8E8E8" },
 		        { xaxis: { from: 19, to: 20 }, color: "#E8E8E8" }
-		 
+
 		    ];
-		 
-		    var options = {            
+
+		    var options = {
 		             series: {
 		                lines: { show: true, lineWidth: 3 },
 		                shadowSize: 0
@@ -71,9 +71,9 @@
 		            grid: {
 		                markings: markings,
 		                backgroundColor: { colors: ["#D1D1D1", "#7A7A7A"] }
-		            }      
+		            }
 		    };
-		 
+
 		    $.plot($("#flotcontainer"),
 		        [
 		            {data:data1},

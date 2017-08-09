@@ -104,17 +104,16 @@ $result = mysqli_query($mysqli, "SELECT *  FROM data_pasien INNER JOIN data_dokt
 										</tr>
 									</thead>
 									<tbody>
-										<tr>
 											<?php while($res = mysqli_fetch_array($result)) {
+												echo "<tr>";
 												echo "<td>".$res['device_id']."</td>";
 												echo "<td>".$res['nama_pasien']."</td>";
 												echo "<td>".$res['nama_dokter']."</td>";
 												echo "<td>".$res['alamat']."</td>";
 												echo "<td>".$res['jenis_kelamin']."</td>";
 												echo "<td><a class=\"btn btn-primary\" href=\"monitoring.php?deviceid=$res[device_id]\">Monitoring</a></td>";
-
+												echo "</tr>";
 											} ?>
-										</tr>
 									</tbody>
 								</table>
 
