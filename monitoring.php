@@ -223,11 +223,9 @@ include("inc/nav.php");
 
 <!-- Full Calendar -->
 <script src="<?php echo ASSETS_URL; ?>/js/plugin/moment/moment.min.js"></script>
-<script src="<?php echo ASSETS_URL; ?>/js/pahomqtt.js"></script>
-<script src="<?php echo ASSETS_URL; ?>/js/mqtt.js"></script>
 <script src="<?php echo ASSETS_URL; ?>/js/plugin/fullcalendar/jquery.fullcalendar.min.js"></script>
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<script src="http://www.hivemq.com/demos/websocket-client/js/mqttws31.js"></script>
+<script src="<?php echo ASSETS_URL; ?>/js/plotly-latest.min.js"></script>
+<script src="<?php echo ASSETS_URL; ?>/js/mqttws31.js"></script>
 <script type="text/javascript">
 console.log("MQTT Test");
 var client = new Messaging.Client("broker.mqttdashboard.com", 8000, "myclientid_" + parseInt(Math.random() * 100, 10));
@@ -252,7 +250,7 @@ client.connect(options);
 function onConnect() {
 // Once a connection has been made, make a subscription and send a message.
 console.log("onConnect");
-client.subscribe("<?php echo $_GET['deviceid']?>");
+client.subscribe("<?php echo "rhythm/".$_GET['deviceid']?>");
 
 };
 
@@ -288,8 +286,8 @@ function onMessageArrived(message) {
  }
  console.log(update)
 
- var olderTime = time.setSeconds(time.getSeconds() - 1);
- var futureTime = time.setSeconds(time.getSeconds() + 1);
+ var olderTime = time.setSeconds(time.getSeconds() - 30);
+ var futureTime = time.setSeconds(time.getSeconds() + 30);
 
  var minuteView = {
 			 xaxis: {
@@ -327,8 +325,8 @@ var client1 = new Messaging.Client("broker.mqttdashboard.com", 8000, "myclientid
 	var miliseconds = currentTime.getMilliseconds();
 		 str += hours + ":" + minutes + ":" + seconds + "." + miliseconds;
 	console.log(str);
-	if(message1.payloadString == "Ventricular Arrhytmia Detected"){
-		$('#mqttnotif').append('<li><div class="smart-timeline-icon bg-color-red"><i class="fa fa-heart"></i></div><div class="smart-timeline-time"><small>'+str+'</small></div><div class="smart-timeline-content"><p><strong class="txt-color-red">'+message1.payloadString+'</strong></p><br></div></li>');
+	if(message1.payloadString == "pvc"){
+		$('#mqttnotif').append('<li><div class="smart-timeline-icon bg-color-red"><i class="fa fa-heart"></i></div><div class="smart-timeline-time"><small>'+str+'</small></div><div class="smart-timeline-content"><p><strong class="txt-color-red">Ventricular Arrhytmia Detected</strong></p><br></div></li>');
 	}else {
 		$('#mqttnotif').append('<li><div class="smart-timeline-icon bg-color-greenDark"><i class="fa fa-heart"></i></div><div class="smart-timeline-time"><small>'+str+'</small></div><div class="smart-timeline-content"><p><strong class="txt-color-greenDark">Normal Heartbeat</strong></p><br></div></li>');
 	}
@@ -350,7 +348,7 @@ client1.connect(options1);
 	 	function onConnect1() {
 	 	 // Once a connection has been made, make a subscription and send a message.
 	 	 console.log("onConnectnotif");
-	 	 client1.subscribe("<?php echo $_GET['deviceid']."-N"?>");
+	 	 client1.subscribe("<?php echo "rhythm/".$_GET['deviceid']."/n"?>");
 	 	/* message = new Messaging.Message("haaay");
 	 	 message.destinationName = "/testmqtt";
 	 	 client.send(message);*/
