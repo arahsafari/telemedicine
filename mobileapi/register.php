@@ -10,6 +10,10 @@ if (isset($_GET['nama_pasien']) && isset($_GET['email']) && isset($_GET['passwor
   $deviceid = $_GET['device_id'];
     $alamat = $_GET['alamat'];
   $jeniskelamin = $_GET['jenis_kelamin'];
+  $telfon = $_GET['phone'];
+  $telfonemergency = $_GET['emergency_phone'];
+  $usia = $_GET['usia'];
+
   $dokter = $_GET['id_dokter'];
 
   if ($jeniskelamin == 1){
@@ -23,7 +27,7 @@ if (isset($_GET['nama_pasien']) && isset($_GET['email']) && isset($_GET['passwor
 
 
 
-  $hasil = mysqli_query($mysqli, "INSERT INTO data_pasien(nama_pasien, email, password, device_id , alamat , jenis_kelamin , id_dokter) VALUES('$namapasien', '$email', md5('$pass'),'$deviceid','$alamat','$jenis_kelamin','$dokter')")
+  $hasil = mysqli_query($mysqli, "INSERT INTO data_pasien(nama_pasien, email, password, device_id , alamat , jenis_kelamin ,phone , emergency_phone ,usia,  id_dokter) VALUES('$namapasien', '$email', md5('$pass'),'$deviceid','$alamat','$jenis_kelamin','$telfon','$telfonemergency','$usia','$dokter')")
     or die(mysqli_error($mysqli));
 
     if ($hasil) {

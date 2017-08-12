@@ -228,7 +228,7 @@ include("inc/nav.php");
 <script src="<?php echo ASSETS_URL; ?>/js/mqttws31.js"></script>
 <script type="text/javascript">
 console.log("MQTT Test");
-var client = new Messaging.Client("broker.mqttdashboard.com", 8000, "myclientid_" + parseInt(Math.random() * 100, 10));
+var client = new Messaging.Client("<?php echo $_GET['ipbroker'] ?>", <?php echo $_GET['portbroker'] ?>, "myclientid_" + parseInt(Math.random() * 100, 10));
 
 client.onConnectionLost = onConnectionLost;
 client.onMessageArrived = onMessageArrived;
@@ -251,7 +251,6 @@ function onConnect() {
 // Once a connection has been made, make a subscription and send a message.
 console.log("onConnect");
 client.subscribe("<?php echo "rhythm/".$_GET['deviceid']?>");
-
 };
 
 function onConnectionLost(responseObject) {
@@ -275,47 +274,63 @@ window.onresize = function() {
 Plotly.Plots.resize(graph);
 };
 
-
+var ECG_data = [];
 function onMessageArrived(message) {
  testing = message.payloadString;
-
- var time = new Date();
- var update = {
- x:  [[time]],
- y: [[testing]]
- }
- console.log(update)
-
- var olderTime = time.setSeconds(time.getSeconds() - 30);
- var futureTime = time.setSeconds(time.getSeconds() + 30);
-
- var minuteView = {
-			 xaxis: {
-				 type: 'date',
-				 range: [olderTime,futureTime]
-			 }
-		 };
-		 console.log(minuteView);
-
- Plotly.relayout('graph', minuteView);
- Plotly.extendTraces('graph', update, [0]);
+ testing = testing.split(":");
+ testing = testing[1];
+ ECG_data.push(testing);
+ //for (i = 0; i < testing.length; i++)
+//console.log(testing);
+ // if(data.length < 1000){
+ // 	//  data.push(testing);
+ // }
+ // else{
+ //  data = []
+ // }
+console.log(ECG_data);
 };
-;
+//
+var i = 0;
+     setInterval(function(){
+							var time = new Date();
+							console.log(i)
+							var update = {
+								 x:  [[time]],
+								 y: [[ECG_data[i]]]
+							}
+							var olderTime = time.setSeconds(time.getSeconds() - 7);
+							var futureTime = time.setSeconds(time.getSeconds() + 7);
+
+							var minuteView = {
+										xaxis: {
+											type: 'date',
+											range: [olderTime,futureTime]
+										}
+									};
+
+						Plotly.relayout('graph', minuteView);
+						Plotly.extendTraces('graph', update, [0]);
+						i++;
+      }, 0);
+
+
 </script>
 <script>
 	$(document).ready(function() {
 
-var client1 = new Messaging.Client("broker.mqttdashboard.com", 8000, "myclientid_" + parseInt(Math.random() * 100, 10));
+var client1 = new Messaging.Client("<?php echo $_GET['ipbroker'] ?>", <?php echo $_GET['portbroker'] ?>, "myclientid_" + parseInt(Math.random() * 100, 10));
 
  //Gets  called if the websocket/mqtt connection gets disconnected for any reason
  client1.onConnectionLost = function (responseObject1) {
      //Depending on your scenario you could implement a reconnect logic here
      alert("connection lost: " + responseObject1.errorMessage);
  };
-
+ var count_notif = 0;
  //Gets called whenever you receive a message for your subscriptions
  client1.onMessageArrived = function (message1) {
-     //Do something with the push message you received
+
+	   //Do something with the push message you received
 		 var str = "";
 
 		 var currentTime = new Date()
@@ -325,11 +340,25 @@ var client1 = new Messaging.Client("broker.mqttdashboard.com", 8000, "myclientid
 	var miliseconds = currentTime.getMilliseconds();
 		 str += hours + ":" + minutes + ":" + seconds + "." + miliseconds;
 	console.log(str);
-	if(message1.payloadString == "pvc"){
-		$('#mqttnotif').append('<li><div class="smart-timeline-icon bg-color-red"><i class="fa fa-heart"></i></div><div class="smart-timeline-time"><small>'+str+'</small></div><div class="smart-timeline-content"><p><strong class="txt-color-red">Ventricular Arrhytmia Detected</strong></p><br></div></li>');
-	}else {
-		$('#mqttnotif').append('<li><div class="smart-timeline-icon bg-color-greenDark"><i class="fa fa-heart"></i></div><div class="smart-timeline-time"><small>'+str+'</small></div><div class="smart-timeline-content"><p><strong class="txt-color-greenDark">Normal Heartbeat</strong></p><br></div></li>');
+
+	if(count_notif >= 5){
+		$('#mqttnotif li').first().remove();
+
+		if(message1.payloadString == "pvc"){
+			$('#mqttnotif').append('<li><div class="smart-timeline-icon bg-color-red"><i class="fa fa-heart"></i></div><div class="smart-timeline-time"><small>'+str+'</small></div><div class="smart-timeline-content"><p><strong class="txt-color-red">Ventricular Arrhytmia Detected</strong></p><br></div></li>');
+		}else {
+			$('#mqttnotif').append('<li><div class="smart-timeline-icon bg-color-greenDark"><i class="fa fa-heart"></i></div><div class="smart-timeline-time"><small>'+str+'</small></div><div class="smart-timeline-content"><p><strong class="txt-color-greenDark">Normal Heartbeat</strong></p><br></div></li>');
+		}
+	}else{
+		if(message1.payloadString == "pvc"){
+			$('#mqttnotif').append('<li><div class="smart-timeline-icon bg-color-red"><i class="fa fa-heart"></i></div><div class="smart-timeline-time"><small>'+str+'</small></div><div class="smart-timeline-content"><p><strong class="txt-color-red">Ventricular Arrhytmia Detected</strong></p><br></div></li>');
+		}else {
+			$('#mqttnotif').append('<li><div class="smart-timeline-icon bg-color-greenDark"><i class="fa fa-heart"></i></div><div class="smart-timeline-time"><small>'+str+'</small></div><div class="smart-timeline-content"><p><strong class="txt-color-greenDark">Normal Heartbeat</strong></p><br></div></li>');
+		}
 	}
+
+	count_notif += 1;
+	console.log(count_notif);
 };
 
  //Connect Options

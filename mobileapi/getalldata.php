@@ -17,6 +17,9 @@ if (isset($_GET['data_pasien']) ) {
     $data_pasien["device_id"] = $res["device_id"];
     $data_pasien["alamat"] = $res["alamat"];
     $data_pasien["jenis_kelamin"] = $res["jenis_kelamin"];
+    $data_pasien["phone"] = $res["phone"];
+    $data_pasien["emergency_phone"] = $res["emergency_phone"];
+    $data_pasien["usia"] = $res["usia"];
     $data_pasien["id_dokter"] = $res["id_dokter"];
 
     array_push($respon["data_pasien"], $data_pasien);
